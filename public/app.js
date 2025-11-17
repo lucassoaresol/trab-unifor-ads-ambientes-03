@@ -6,8 +6,9 @@ var e = '';
 var f1 = '';
 var g = null;
 
-const API = 'https://pokeapi.co/api/v2/pokemon';
-const API2 = 'https://pokeapi.co/api/v2/type';
+const baseUrlApi =  'https://pokeapi.co/api/v2';
+const endpointPokemon = `${baseUrlApi}/pokemon`;
+const endpointType = `${baseUrlApi}/type`;
 
 async function i() {
     document.getElementById('loading').innerHTML = '';
@@ -16,7 +17,7 @@ async function i() {
     }
     
     try {
-        var r = await fetch(API2);
+        var r = await fetch(endpointType);
         var dt = await r.json();
         var sel = document.getElementById('typeFilter');
         for(var i = 0; i < dt.results.length; i++) {
@@ -38,7 +39,7 @@ async function l() {
     
     try {
         var off = (c - 1) * d;
-        var ur = API + '?limit=' + d + '&offset=' + off;
+        var ur = endpointPokemon + '?limit=' + d + '&offset=' + off;
         var r = await fetch(ur);
         var dt = await r.json();
         
@@ -67,7 +68,7 @@ async function lbt() {
     document.getElementById('pokemonGrid').style.display = 'none';
 
     try {
-        var ur = API2 + '/' + f1;
+        var ur = endpointType + '/' + f1;
         var r = await fetch(ur);
         var dt = await r.json();
 
@@ -184,7 +185,7 @@ function x() {
 
 async function Minhe_nha(id) {
     try {
-        var xpto = await fetch(API + '/' + id);
+        var xpto = await fetch(endpointPokemon + '/' + id);
         var p = await xpto.json();
         
         var zyz = await fetch(p.species.url);
