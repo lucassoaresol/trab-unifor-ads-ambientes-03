@@ -179,7 +179,7 @@ function p2() {
     }
 }
 
-function x() {
+function toggleTheme() {
     document.body.classList.toggle('dark');
 }
 
