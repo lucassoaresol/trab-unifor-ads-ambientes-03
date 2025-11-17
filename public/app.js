@@ -150,7 +150,7 @@ async function f() {
     }
 }
 
-function r() {
+function clearFilter() {
     document.getElementById('s').value = '';
     document.getElementById('typeFilter').value = '';
     e = '';
