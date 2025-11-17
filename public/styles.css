@@ -1,0 +1,154 @@
+/* Estilos com nomes ruins e código duplicado */
+
+/* Variável global mal nomeada */
+:root {
+    --c1: #ffffff;
+    --c2: #f8f9fa;
+    --c3: #000000;
+    --c4: #dee2e6;
+}
+
+/* Tema escuro com seletor confuso */
+body.dark {
+    --c1: #212529;
+    --c2: #343a40;
+    --c3: #ffffff;
+    --c4: #495057;
+}
+
+body {
+    background-color: var(--c2);
+    color: var(--c3);
+    transition: all 0.3s;
+}
+
+/* Classe com nome não descritivo */
+.c {
+    background-color: var(--c1);
+    border-radius: 10px;
+    padding: 15px;
+    transition: transform 0.2s;
+    cursor: pointer;
+    border: 2px solid var(--c4);
+}
+
+/* Hover duplicado */
+.c:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.c:hover {
+    transform: translateY(-5px);
+}
+
+/* Classe com nome de uma letra */
+.i {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+}
+
+/* Números mágicos espalhados */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 10px;
+    height: 300px;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Seletor muito específico e desnecessário */
+body .container .row .col-md-3 .c .i {
+    margin-bottom: 10px;
+}
+
+/* Código duplicado para badges */
+.badge {
+    margin: 2px;
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.badge {
+    margin: 2px;
+}
+
+/* Classes de tipo com cores hardcoded */
+.type-normal { background-color: #A8A878; }
+.type-fire { background-color: #F08030; }
+.type-water { background-color: #6890F0; }
+.type-electric { background-color: #F8D030; }
+.type-grass { background-color: #78C850; }
+.type-ice { background-color: #98D8D8; }
+.type-fighting { background-color: #C03028; }
+.type-poison { background-color: #A040A0; }
+.type-ground { background-color: #E0C068; }
+.type-flying { background-color: #A890F0; }
+.type-psychic { background-color: #F85888; }
+.type-bug { background-color: #A8B820; }
+.type-rock { background-color: #B8A038; }
+.type-ghost { background-color: #705898; }
+.type-dragon { background-color: #7038F8; }
+.type-dark { background-color: #705848; }
+.type-steel { background-color: #B8B8D0; }
+.type-fairy { background-color: #EE99AC; }
+
+/* Classe nunca usada */
+.unused-class {
+    color: red;
+    font-size: 20px;
+}
+
+/* Mais duplicação */
+.modal-content {
+    background-color: var(--c1);
+    color: var(--c3);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--c4);
+}
+
+/* Seletor desnecessariamente complexo */
+body > div.container > div.row > div {
+    margin-bottom: 15px;
+}
+
+/* Sprite container com números mágicos */
+.sprite-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+}
+
+.sprite-container img {
+    width: 96px;
+    height: 96px;
+}
+
+/* Stats com código repetitivo */
+.stat-bar {
+    height: 20px;
+    background-color: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.stat-fill {
+    height: 100%;
+    background-color: #dc3545;
+    transition: width 0.3s;
+}
+
+/* Mais código morto */
+.another-unused {
+    display: none;
+}
+
