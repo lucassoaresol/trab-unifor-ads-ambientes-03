@@ -35,61 +35,62 @@ async function loadInitialData() {
     loadPokemonList();
 }
 
-async function l() {
+async function loadPokemonList() {
     document.getElementById('loading').style.display = 'flex';
     document.getElementById('pokemonGrid').style.display = 'none';
-    
+
     try {
-        var off = (c - 1) * d;
-        var ur = endpointPokemon + '?limit=' + d + '&offset=' + off;
-        var r = await fetch(ur);
-        var dt = await r.json();
-        
-        var pro = [];
-        for(var i = 0; i < dt.results.length; i++) {
-            pro.push(fetch(dt.results[i].url));
+        var offset = (currentPage - 1) * itemsPerPage;
+        var url = endpointPokemon + '?limit=' + itemsPerPage + '&offset=' + offset;
+        var response = await fetch(url);
+        var data = await response.json();
+
+        var promises = [];
+        for (var index = 0; index < data.results.length; index++) {
+            promises.push(fetch(data.results[index].url));
         }
-        
-        var r = await Promise.all(pro);
-        a = [];
-        for(var i = 0; i < r.length; i++) {
-            var pokemon = await r[i].json();
-            a.push(pokemon);
+
+        var pokemonResponses = await Promise.all(promises);
+        pokemonList = [];
+        for (var index = 0; index < pokemonResponses.length; index++) {
+            var pokemon = await pokemonResponses[index].json();
+            pokemonList.push(pokemon);
         }
-        
-        b = [...a];
-        UNIFOR();
-    } catch(error) {
+
+        filteredList = [...pokemonList];
+        renderPokemonGrid();
+    } catch (error) {
         console.log('erro ao carregar');
         alert('Erro ao carregar Pokémons!');
     }
 }
 
-async function lbt() {
+async function loadByType() {
     document.getElementById('loading').style.display = 'flex';
     document.getElementById('pokemonGrid').style.display = 'none';
 
     try {
-        var ur = endpointType + '/' + f1;
-        var r = await fetch(ur);
-        var dt = await r.json();
+        var url = endpointType + '/' + selectedType;
+        var response = await fetch(url);
+        var data = await response.json();
 
-        var pr = [];
-        var li = dt.pokemon.length > 100 ? 100 : dt.pokemon.length; // Limita a 100
-        for(var i = 0; i < li; i++) {
-            pr.push(fetch(dt.pokemon[i].pokemon.url));
+        var typePromises = [];
+        var limit = data.pokemon.length > 100 ? 100 : data.pokemon.length;
+        for (var index = 0; index < limit; index++) {
+            typePromises.push(fetch(data.pokemon[index].pokemon.url));
         }
 
-        var rps = await Promise.all(pr);
-        a = [];
-        for(var i = 0; i < rps.length; i++) {
-            var p = await rps[i].json();
-            a.push(p);
+        var pokemonResponses = await Promise.all(typePromises);
+        pokemonList = [];
+
+        for (var index = 0; index < pokemonResponses.length; index++) {
+            var pokemon = await pokemonResponses[index].json();
+            pokemonList.push(pokemon);
         }
 
-        b = [...a];
-        UNIFOR();
-    } catch(error) {
+        filteredList = [...pokemonList];
+        renderPokemonGrid();
+    } catch (error) {
         console.log('erro ao carregar tipo');
         alert('Erro ao carregar Pokémons do tipo!');
     }
