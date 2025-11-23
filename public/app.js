@@ -1,10 +1,10 @@
-var a = [];
-var b = [];
-var c = 1;
-var d = 20;
-var e = '';
-var f1 = '';
-var g = null;
+var pokemonList = [];
+var filteredList = [];
+var currentPage = 1;
+var itemsPerPage = 20;
+var searchText = '';
+var selectedType = '';
+var unusedVar = null;
 
 const baseUrlApi =  'https://pokeapi.co/api/v2';
 const endpointPokemon = `${baseUrlApi}/pokemon`;
