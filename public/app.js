@@ -6,31 +6,33 @@ var searchText = '';
 var selectedType = '';
 var unusedVar = null;
 
-const baseUrlApi =  'https://pokeapi.co/api/v2';
+const baseUrlApi = 'https://pokeapi.co/api/v2';
 const endpointPokemon = `${baseUrlApi}/pokemon`;
 const endpointType = `${baseUrlApi}/type`;
 
-async function i() {
+async function loadInitialData() {
     document.getElementById('loading').innerHTML = '';
-    for(var i = 0; i < 20; i++) {
+    for (var index = 0; index < 20; index++) {
         document.getElementById('loading').innerHTML += '<div class="col-md-3"><div class="skeleton"></div></div>';
     }
-    
+
     try {
-        var r = await fetch(endpointType);
-        var dt = await r.json();
-        var sel = document.getElementById('typeFilter');
-        for(var i = 0; i < dt.results.length; i++) {
-            var opt = document.createElement('option');
-            opt.value = dt.results[i].name;
-            opt.textContent = dt.results[i].name.charAt(0).toUpperCase() + dt.results[i].name.slice(1);
-            sel.appendChild(opt);
+        var response = await fetch(endpointType);
+        var data = await response.json();
+        var typeSelect = document.getElementById('typeFilter');
+        for (var index = 0; index < data.results.length; index++) {
+            var option = document.createElement('option');
+            option.value = data.results[index].name;
+            option.textContent =
+                data.results[index].name.charAt(0).toUpperCase() +
+                data.results[index].name.slice(1);
+            typeSelect.appendChild(option);
         }
-    } catch(err) {
+    } catch (error) {
         console.log('erro');
     }
-    
-    l();
+
+    loadPokemonList();
 }
 
 async function l() {
