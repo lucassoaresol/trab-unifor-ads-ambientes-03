@@ -10,6 +10,17 @@ const baseUrlApi = 'https://pokeapi.co/api/v2';
 const endpointPokemon = `${baseUrlApi}/pokemon`;
 const endpointType = `${baseUrlApi}/type`;
 
+async function fetchPokemonTypes() {
+    const response = await fetch(endpointType);
+
+    if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.results ?? [];
+}
+
 async function loadInitialData() {
     const loadingContainer = document.getElementById('loading');
     const typeSelect = document.getElementById('typeFilter');
@@ -20,14 +31,13 @@ async function loadInitialData() {
     }
 
     try {
-        const response = await fetch(endpointType);
-        const data = await response.json();
-        for (let index = 0; index < data.results.length; index++) {
+        const types = await fetchPokemonTypes();
+        for (let index = 0; index < types.length; index++) {
             let option = document.createElement('option');
-            option.value = data.results[index].name;
+            option.value = types[index].name;
             option.textContent =
-                data.results[index].name.charAt(0).toUpperCase() +
-                data.results[index].name.slice(1);
+                types[index].name.charAt(0).toUpperCase() +
+                types[index].name.slice(1);
             typeSelect.appendChild(option);
         }
     } catch (error) {
