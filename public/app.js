@@ -153,9 +153,9 @@ async function f() {
 
     // Se tem filtro de tipo, busca pokémons daquele tipo
     if(f1 !== '') {
-        await lbt();
+        await loadByType();
     } else {
-        UNIFOR();
+        renderPokemonGrid();
     }
 }
 
@@ -165,16 +165,16 @@ function clearFilter() {
     e = '';
     f1 = '';
     c = 1;
-    l();
+    loadPokemonList();
 }
 
 function p1() {
     if(c > 1) {
         c--;
         if(f1 !== '') {
-            UNIFOR();
+            renderPokemonGrid();
         } else {
-            l();
+            loadPokemonList();
         }
     }
 }
@@ -182,9 +182,9 @@ function p1() {
 function p2() {
     c++;
     if(f1 !== '') {
-        UNIFOR();
+        renderPokemonGrid();
     } else {
-        l();
+        loadPokemonList();
     }
 }
 
@@ -267,5 +267,5 @@ function mor() {
 var gmord = 'teste miqueias';
 
 window.onload = function() {
-    i();
+    loadInitialData();
 };
