@@ -1,10 +1,10 @@
-var pokemonList = [];
-var filteredList = [];
-var currentPage = 1;
-var itemsPerPage = 20;
-var searchText = '';
-var selectedType = '';
-var unusedVar = null;
+let pokemonList = [];
+let filteredList = [];
+let currentPage = 1;
+const ITEMS_PER_PAGE = 20;
+let searchText = '';
+let selectedType = '';
+let unusedVar = null;
 
 const baseUrlApi = 'https://pokeapi.co/api/v2';
 const endpointPokemon = `${baseUrlApi}/pokemon`;
@@ -12,7 +12,7 @@ const endpointType = `${baseUrlApi}/type`;
 
 async function loadInitialData() {
     document.getElementById('loading').innerHTML = '';
-    for (var index = 0; index < 20; index++) {
+    for (var index = 0; index < ITEMS_PER_PAGE; index++) {
         document.getElementById('loading').innerHTML += '<div class="col-md-3"><div class="skeleton"></div></div>';
     }
 
@@ -40,8 +40,8 @@ async function loadPokemonList() {
     document.getElementById('pokemonGrid').style.display = 'none';
 
     try {
-        var offset = (currentPage - 1) * itemsPerPage;
-        var url = endpointPokemon + '?limit=' + itemsPerPage + '&offset=' + offset;
+        var offset = (currentPage - 1) * ITEMS_PER_PAGE;
+        var url = endpointPokemon + '?limit=' + ITEMS_PER_PAGE + '&offset=' + offset;
         var response = await fetch(url);
         var data = await response.json();
 
