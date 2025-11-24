@@ -32,16 +32,14 @@ async function loadInitialData() {
 
     try {
         const types = await fetchPokemonTypes();
-        for (let index = 0; index < types.length; index++) {
-            let option = document.createElement('option');
-            option.value = types[index].name;
-            option.textContent =
-                types[index].name.charAt(0).toUpperCase() +
-                types[index].name.slice(1);
+        types.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type.name;
+            option.textContent = option.value.charAt(0).toUpperCase() + option.value.slice(1);
             typeSelect.appendChild(option);
-        }
+        });
     } catch (error) {
-        console.log('erro');
+        console.log('erro ao carregar tipos');
     }
 
     await loadPokemonList();
