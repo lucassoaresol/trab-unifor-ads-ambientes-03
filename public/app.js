@@ -11,17 +11,19 @@ const endpointPokemon = `${baseUrlApi}/pokemon`;
 const endpointType = `${baseUrlApi}/type`;
 
 async function loadInitialData() {
-    document.getElementById('loading').innerHTML = '';
+    const loadingContainer = document.getElementById('loading');
+    const typeSelect = document.getElementById('typeFilter');
+
+    loadingContainer.innerHTML = '';
     for (var index = 0; index < ITEMS_PER_PAGE; index++) {
-        document.getElementById('loading').innerHTML += '<div class="col-md-3"><div class="skeleton"></div></div>';
+        loadingContainer.innerHTML += '<div class="col-md-3"><div class="skeleton"></div></div>';
     }
 
     try {
-        var response = await fetch(endpointType);
-        var data = await response.json();
-        var typeSelect = document.getElementById('typeFilter');
-        for (var index = 0; index < data.results.length; index++) {
-            var option = document.createElement('option');
+        const response = await fetch(endpointType);
+        const data = await response.json();
+        for (let index = 0; index < data.results.length; index++) {
+            let option = document.createElement('option');
             option.value = data.results[index].name;
             option.textContent =
                 data.results[index].name.charAt(0).toUpperCase() +
@@ -32,7 +34,7 @@ async function loadInitialData() {
         console.log('erro');
     }
 
-    loadPokemonList();
+    await loadPokemonList();
 }
 
 async function loadPokemonList() {
