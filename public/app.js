@@ -150,10 +150,10 @@ function renderPokemonGrid() {
     if(selectedType !== '') {
         document.getElementById('pageInfo').textContent = 'Mostrando ' + fil.length + ' pokémons';
     } else {
-        document.getElementById('pageInfo').textContent = 'Página ' + c;
+        document.getElementById('pageInfo').textContent = 'Página ' + currentPage;
     }
 
-    document.getElementById('prevBtn').disabled = c === 1 || selectedType !== '';
+    document.getElementById('prevBtn').disabled = currentPage === 1 || selectedType !== '';
     document.getElementById('nextBtn').disabled = selectedType !== '';
 }
 
@@ -174,13 +174,13 @@ function clearFilter() {
     document.getElementById('typeFilter').value = '';
     e = '';
     selectedType = '';
-    c = 1;
+    currentPage = 1;
     loadPokemonList();
 }
 
 function p1() {
-    if(c > 1) {
-        c--;
+    if(currentPage > 1) {
+        currentPage--;
         if(selectedType !== '') {
             renderPokemonGrid();
         } else {
@@ -190,7 +190,7 @@ function p1() {
 }
 
 function p2() {
-    c++;
+    currentPage++;
     if(selectedType !== '') {
         renderPokemonGrid();
     } else {
