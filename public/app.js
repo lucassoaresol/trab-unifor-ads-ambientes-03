@@ -4,7 +4,6 @@ let currentPage = 1;
 const ITEMS_PER_PAGE = 20;
 let searchText = '';
 let selectedType = '';
-let unusedVar = null;
 
 const baseUrlApi = 'https://pokeapi.co/api/v2';
 const endpointPokemon = `${baseUrlApi}/pokemon`;
@@ -148,7 +147,7 @@ function renderPokemonGrid() {
     document.getElementById('pokemonGrid').style.display = 'flex';
 
     if(selectedType !== '') {
-        document.getElementById('pageInfo').textContent = 'Mostrando ' + fil.length + ' pokémons';
+        document.getElementById('pageInfo').textContent = 'Mostrando ' + listToRender.length + ' pokémons';
     } else {
         document.getElementById('pageInfo').textContent = 'Página ' + currentPage;
     }
@@ -157,11 +156,10 @@ function renderPokemonGrid() {
     document.getElementById('nextBtn').disabled = selectedType !== '';
 }
 
-async function f() {
+async function filterPokemon() {
     searchText = document.getElementById('s').value;
     selectedType = document.getElementById('typeFilter').value;
 
-    // Se tem filtro de tipo, busca pokémons daquele tipo
     if(selectedType !== '') {
         await loadByType();
     } else {
