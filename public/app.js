@@ -158,7 +158,7 @@ function renderPokemonGrid() {
 }
 
 async function f() {
-    e = document.getElementById('s').value;
+    searchText = document.getElementById('s').value;
     selectedType = document.getElementById('typeFilter').value;
 
     // Se tem filtro de tipo, busca pokémons daquele tipo
@@ -172,7 +172,7 @@ async function f() {
 function clearFilter() {
     document.getElementById('s').value = '';
     document.getElementById('typeFilter').value = '';
-    e = '';
+    searchText = '';
     selectedType = '';
     currentPage = 1;
     loadPokemonList();
