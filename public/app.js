@@ -147,22 +147,22 @@ function renderPokemonGrid() {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('pokemonGrid').style.display = 'flex';
 
-    if(f1 !== '') {
+    if(selectedType !== '') {
         document.getElementById('pageInfo').textContent = 'Mostrando ' + fil.length + ' pokémons';
     } else {
         document.getElementById('pageInfo').textContent = 'Página ' + c;
     }
 
-    document.getElementById('prevBtn').disabled = c === 1 || f1 !== '';
-    document.getElementById('nextBtn').disabled = f1 !== '';
+    document.getElementById('prevBtn').disabled = c === 1 || selectedType !== '';
+    document.getElementById('nextBtn').disabled = selectedType !== '';
 }
 
 async function f() {
     e = document.getElementById('s').value;
-    f1 = document.getElementById('typeFilter').value;
+    selectedType = document.getElementById('typeFilter').value;
 
     // Se tem filtro de tipo, busca pokémons daquele tipo
-    if(f1 !== '') {
+    if(selectedType !== '') {
         await loadByType();
     } else {
         renderPokemonGrid();
@@ -173,7 +173,7 @@ function clearFilter() {
     document.getElementById('s').value = '';
     document.getElementById('typeFilter').value = '';
     e = '';
-    f1 = '';
+    selectedType = '';
     c = 1;
     loadPokemonList();
 }
@@ -181,7 +181,7 @@ function clearFilter() {
 function p1() {
     if(c > 1) {
         c--;
-        if(f1 !== '') {
+        if(selectedType !== '') {
             renderPokemonGrid();
         } else {
             loadPokemonList();
@@ -191,7 +191,7 @@ function p1() {
 
 function p2() {
     c++;
-    if(f1 !== '') {
+    if(selectedType !== '') {
         renderPokemonGrid();
     } else {
         loadPokemonList();
