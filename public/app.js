@@ -30,6 +30,13 @@ function createLoadingSkeleton() {
     ).join('');
 }
 
+function toggleLoadingState(isLoading) {
+    const loadingElement = document.getElementById('loading');
+    const gridElement = document.getElementById('pokemonGrid');
+    loadingElement.style.display = isLoading ? 'flex' : 'none';
+    gridElement.style.display = isLoading ? 'none' : 'flex';
+}
+
 function populateTypeOptions(types) {
     const typeSelect = document.getElementById('typeFilter');
     types.forEach(type => {
@@ -62,8 +69,7 @@ async function fetchPokemonDetails(pokemonUrl) {
 }
 
 async function loadPokemonList() {
-    document.getElementById('loading').style.display = 'flex';
-    document.getElementById('pokemonGrid').style.display = 'none';
+    toggleLoadingState(true);
 
     try {
         const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -72,14 +78,15 @@ async function loadPokemonList() {
         const data = await response.json();
 
         const pokemonPromises = data.results.map(pokemon => fetchPokemonDetails(pokemon.url));
-        const pokemonResponses = await Promise.all(pokemonPromises);
-
-        pokemonList = pokemonResponses;
+        pokemonList = await Promise.all(pokemonPromises);
         filteredList = [...pokemonList];
+
         renderPokemonGrid();
     } catch (error) {
         console.log('erro ao carregar');
         alert('Erro ao carregar Pokémons!');
+    } finally {
+        toggleLoadingState(false);
     }
 }
 
@@ -114,20 +121,20 @@ async function loadByType() {
     }
 }
 
+function getFilteredPokemonList() {
+    if (!searchText) return filteredList;
+
+    return filteredList.filter(pokemon => 
+        pokemon.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        pokemon.id.toString().includes(searchText)
+    );
+}
 
 function renderPokemonGrid() {
-    var grid = document.getElementById('pokemonGrid');
+    const grid = document.getElementById('pokemonGrid');
     grid.innerHTML = '';
 
-    var listToRender = filteredList;
-    if (searchText !== '') {
-        listToRender = listToRender.filter(function (pokemon) {
-            return (
-                pokemon.name.toLowerCase().includes(searchText.toLowerCase()) ||
-                pokemon.id.toString().includes(searchText)
-            );
-        });
-    }
+    const listToRender = getFilteredPokemonList();
 
     for (var index = 0; index < listToRender.length; index++) {
         var pokemon = listToRender[index];
