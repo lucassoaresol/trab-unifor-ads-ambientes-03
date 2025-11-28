@@ -94,32 +94,32 @@ async function loadPokemonList() {
     }
 }
 
-async function loadByType() {
+function createPokemonFetchPromises(pokemonData) {
+    const limit = Math.min(pokemonData.length, 100);
+    return pokemonData.slice(0, limit).map(pokemon => fetch(pokemon.pokemon.url));
+}
+
+async function getPokemonsFromResponses(pokemonResponses) {
+    const pokemonPromises = pokemonResponses.map(response => response.json());
+    return await Promise.all(pokemonPromises);
+}
+
+async function loadPokemonsByType() {
     toggleLoadingState(true);
 
     try {
-        var url = endpointType + '/' + selectedType;
-        var response = await fetch(url);
-        var data = await response.json();
+        const url = `${endpointType}/${selectedType}`;
+        const response = await fetch(url);
+        const data = await response.json();
 
-        var typePromises = [];
-        var limit = data.pokemon.length > 100 ? 100 : data.pokemon.length;
-        for (var index = 0; index < limit; index++) {
-            typePromises.push(fetch(data.pokemon[index].pokemon.url));
-        }
-
-        var pokemonResponses = await Promise.all(typePromises);
-        pokemonList = [];
-
-        for (var index = 0; index < pokemonResponses.length; index++) {
-            var pokemon = await pokemonResponses[index].json();
-            pokemonList.push(pokemon);
-        }
-
+        const pokemonPromises = createPokemonFetchPromises(data.pokemon);
+        const pokemonResponses = await Promise.all(pokemonPromises);
+        
+        pokemonList = await getPokemonsFromResponses(pokemonResponses);
         filteredList = [...pokemonList];
         renderPokemonGrid();
     } catch (error) {
-        console.log('erro ao carregar tipo');
+        console.log('Erro ao carregar Pokémons por tipo');
         alert('Erro ao carregar Pokémons do tipo!');
     } finally {
         toggleLoadingState(false);
@@ -186,7 +186,7 @@ async function filterPokemon() {
     selectedType = document.getElementById('typeFilter').value;
 
     if(selectedType !== '') {
-        await loadByType();
+        await loadPokemonsByType();
     } else {
         renderPokemonGrid();
     }
