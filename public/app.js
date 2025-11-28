@@ -1,7 +1,7 @@
+const ITEMS_PER_PAGE = 20;
+let currentPage = 1;
 let pokemonList = [];
 let filteredList = [];
-let currentPage = 1;
-const ITEMS_PER_PAGE = 20;
 let searchText = '';
 let selectedType = '';
 
@@ -24,14 +24,10 @@ async function fetchPokemonTypes() {
 }
 
 function createLoadingSkeleton() {
-    const loadingContainer = document.getElementById('loading');
-    loadingContainer.innerHTML = '';
-    
-    const skeletonHTML = Array.from({ length: ITEMS_PER_PAGE }, () => 
+    const loadingContainer = document.getElementById('loading');    
+    loadingContainer.innerHTML = Array.from({ length: ITEMS_PER_PAGE }, () => 
         '<div class="col-md-3"><div class="skeleton"></div></div>'
     ).join('');
-    
-    loadingContainer.innerHTML = skeletonHTML;
 }
 
 function populateTypeOptions(types) {
@@ -57,28 +53,28 @@ async function loadInitialData() {
     await loadPokemonList();
 }
 
+async function fetchPokemonDetails(pokemonUrl) {
+    const response = await fetch(pokemonUrl);
+    if (!response.ok) {
+        throw new Error('Failed to fetch Pokemon details');
+    }
+    return response.json();
+}
+
 async function loadPokemonList() {
     document.getElementById('loading').style.display = 'flex';
     document.getElementById('pokemonGrid').style.display = 'none';
 
     try {
-        var offset = (currentPage - 1) * ITEMS_PER_PAGE;
-        var url = endpointPokemon + '?limit=' + ITEMS_PER_PAGE + '&offset=' + offset;
-        var response = await fetch(url);
-        var data = await response.json();
+        const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+        const url = `${endpointPokemon}?limit=${ITEMS_PER_PAGE}&offset=${offset}`;
+        const response = await fetch(url);
+        const data = await response.json();
 
-        var promises = [];
-        for (var index = 0; index < data.results.length; index++) {
-            promises.push(fetch(data.results[index].url));
-        }
+        const pokemonPromises = data.results.map(pokemon => fetchPokemonDetails(pokemon.url));
+        const pokemonResponses = await Promise.all(pokemonPromises);
 
-        var pokemonResponses = await Promise.all(promises);
-        pokemonList = [];
-        for (var index = 0; index < pokemonResponses.length; index++) {
-            var pokemon = await pokemonResponses[index].json();
-            pokemonList.push(pokemon);
-        }
-
+        pokemonList = pokemonResponses;
         filteredList = [...pokemonList];
         renderPokemonGrid();
     } catch (error) {
