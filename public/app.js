@@ -37,12 +37,16 @@ function toggleLoadingState(isLoading) {
     gridElement.style.display = isLoading ? 'none' : 'flex';
 }
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 function populateTypeOptions(types) {
     const typeSelect = document.getElementById('typeFilter');
     types.forEach(type => {
         const option = document.createElement('option');
         option.value = type.name;
-        option.textContent = type.name.charAt(0).toUpperCase() + type.name.slice(1);
+        option.textContent = capitalizeFirstLetter(type.name);
         typeSelect.appendChild(option);
     });
 }
@@ -91,8 +95,7 @@ async function loadPokemonList() {
 }
 
 async function loadByType() {
-    document.getElementById('loading').style.display = 'flex';
-    document.getElementById('pokemonGrid').style.display = 'none';
+    toggleLoadingState(true);
 
     try {
         var url = endpointType + '/' + selectedType;
@@ -118,6 +121,8 @@ async function loadByType() {
     } catch (error) {
         console.log('erro ao carregar tipo');
         alert('Erro ao carregar Pokémons do tipo!');
+    } finally {
+        toggleLoadingState(false);
     }
 }
 
@@ -130,46 +135,50 @@ function getFilteredPokemonList() {
     );
 }
 
+function generateTypeBadges(pokemon) {
+    return pokemon.types.map(type => 
+        `<span class="badge type-${type.type.name}">${type.type.name}</span>`
+    ).join(' ');
+}
+
+function updatePageInfo(listToRender) {
+    const pageInfo = document.getElementById('pageInfo');
+    pageInfo.textContent = selectedType 
+        ? `Mostrando ${listToRender.length} pokémons` 
+        : `Página ${currentPage}`;
+}
+
+function updatePaginationControls() {
+    document.getElementById('prevBtn').disabled = currentPage === 1 || selectedType !== '';
+    document.getElementById('nextBtn').disabled = selectedType !== '';
+}
+
+function createPokemonCard(pokemon) {
+    const container = document.createElement('div');
+    container.className = 'col-md-3';
+
+    container.innerHTML = `
+        <div class="c" onclick="showDetails(${pokemon.id})">
+            <img src="${pokemon.sprites.front_default}" class="i" alt="${pokemon.name}">
+            <h5 class="text-center">#${pokemon.id} ${capitalizeFirstLetter(pokemon.name)}</h5>
+            <div class="text-center">
+                ${generateTypeBadges(pokemon)}
+            </div>
+        </div>
+    `;
+
+    return container;
+}
+
 function renderPokemonGrid() {
     const grid = document.getElementById('pokemonGrid');
     grid.innerHTML = '';
 
     const listToRender = getFilteredPokemonList();
-
-    for (var index = 0; index < listToRender.length; index++) {
-        var pokemon = listToRender[index];
-        var container = document.createElement('div');
-        container.className = 'col-md-3';
-
-        var content = '<div class="c" onclick="showDetails(' + pokemon.id + ')">';
-        content += '<img src="' + pokemon.sprites.front_default + '" class="i" alt="' + pokemon.name + '">';
-        content += '<h5 class="text-center">#' + pokemon.id + ' ' +
-            pokemon.name.charAt(0).toUpperCase() +
-            pokemon.name.slice(1) +
-            '</h5>';
-
-        content += '<div class="text-center">';
-        for (var j = 0; j < pokemon.types.length; j++) {
-            var typeName = pokemon.types[j].type.name;
-            content += '<span class="badge type-' + typeName + '">' + typeName + '</span> ';
-        }
-        content += '</div></div>';
-
-        container.innerHTML = content;
-        grid.appendChild(container);
-    }
+    listToRender.forEach(pokemon => grid.appendChild(createPokemonCard(pokemon)));
     
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('pokemonGrid').style.display = 'flex';
-
-    if(selectedType !== '') {
-        document.getElementById('pageInfo').textContent = 'Mostrando ' + listToRender.length + ' pokémons';
-    } else {
-        document.getElementById('pageInfo').textContent = 'Página ' + currentPage;
-    }
-
-    document.getElementById('prevBtn').disabled = currentPage === 1 || selectedType !== '';
-    document.getElementById('nextBtn').disabled = selectedType !== '';
+    updatePageInfo(listToRender);
+    updatePaginationControls();
 }
 
 async function filterPokemon() {
