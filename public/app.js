@@ -10,35 +10,48 @@ const endpointPokemon = `${baseUrlApi}/pokemon`;
 const endpointType = `${baseUrlApi}/type`;
 
 async function fetchPokemonTypes() {
-    const response = await fetch(endpointType);
-
-    if (!response.ok) {
-        throw new Error(`Request failed with status ${response.status}`);
+    try {
+        const response = await fetch(endpointType);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch Pokemon types. Status: ${response.status}`);
+        }
+        const data = await response.json();
+        return data.results ?? [];
+    } catch (error) {
+        console.error('Error fetching Pokemon types:', error);
+        return [];
     }
+}
 
-    const data = await response.json();
-    return data.results ?? [];
+function createLoadingSkeleton() {
+    const loadingContainer = document.getElementById('loading');
+    loadingContainer.innerHTML = '';
+    
+    const skeletonHTML = Array.from({ length: ITEMS_PER_PAGE }, () => 
+        '<div class="col-md-3"><div class="skeleton"></div></div>'
+    ).join('');
+    
+    loadingContainer.innerHTML = skeletonHTML;
+}
+
+function populateTypeOptions(types) {
+    const typeSelect = document.getElementById('typeFilter');
+    types.forEach(type => {
+        const option = document.createElement('option');
+        option.value = type.name;
+        option.textContent = type.name.charAt(0).toUpperCase() + type.name.slice(1);
+        typeSelect.appendChild(option);
+    });
 }
 
 async function loadInitialData() {
-    const loadingContainer = document.getElementById('loading');
-    const typeSelect = document.getElementById('typeFilter');
+    createLoadingSkeleton();
 
-    loadingContainer.innerHTML = '';
-    for (var index = 0; index < ITEMS_PER_PAGE; index++) {
-        loadingContainer.innerHTML += '<div class="col-md-3"><div class="skeleton"></div></div>';
-    }
-
-    try {
-        const types = await fetchPokemonTypes();
-        types.forEach(type => {
-            const option = document.createElement('option');
-            option.value = type.name;
-            option.textContent = option.value.charAt(0).toUpperCase() + option.value.slice(1);
-            typeSelect.appendChild(option);
-        });
-    } catch (error) {
-        console.log('erro ao carregar tipos');
+    const types = await fetchPokemonTypes();
+    if (types.length) {
+        populateTypeOptions(types);
+    } else {
+        console.log('No types available or failed to load.');
     }
 
     await loadPokemonList();
