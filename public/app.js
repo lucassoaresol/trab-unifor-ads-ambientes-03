@@ -176,7 +176,7 @@ function clearFilter() {
     loadPokemonList();
 }
 
-function p1() {
+function backPage() {
     if(currentPage > 1) {
         currentPage--;
         if(selectedType !== '') {
@@ -187,7 +187,7 @@ function p1() {
     }
 }
 
-function p2() {
+function nextPage() {
     currentPage++;
     if(selectedType !== '') {
         renderPokemonGrid();
