@@ -200,7 +200,7 @@ function toggleTheme() {
     document.body.classList.toggle('dark');
 }
 
-async function Minhe_nha(id) {
+async function showDetails(id) {
     try {
         var xpto = await fetch(endpointPokemon + '/' + id);
         var p = await xpto.json();
