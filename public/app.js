@@ -1,17 +1,17 @@
 const ITEMS_PER_PAGE = 20;
+const BASE_URL_API = 'https://pokeapi.co/api/v2';
+const ENDPOINT_POKEMON = `${BASE_URL_API}/pokemon`;
+const ENDPOINT_TYPE = `${BASE_URL_API}/type`;
+
 let currentPage = 1;
 let pokemonList = [];
 let filteredList = [];
 let searchText = '';
 let selectedType = '';
 
-const baseUrlApi = 'https://pokeapi.co/api/v2';
-const endpointPokemon = `${baseUrlApi}/pokemon`;
-const endpointType = `${baseUrlApi}/type`;
-
 async function fetchPokemonTypes() {
     try {
-        const response = await fetch(endpointType);
+        const response = await fetch(ENDPOINT_TYPE);
         if (!response.ok) {
             throw new Error(`Failed to fetch Pokemon types. Status: ${response.status}`);
         }
@@ -77,7 +77,7 @@ async function loadPokemonList() {
 
     try {
         const offset = (currentPage - 1) * ITEMS_PER_PAGE;
-        const url = `${endpointPokemon}?limit=${ITEMS_PER_PAGE}&offset=${offset}`;
+        const url = `${ENDPOINT_POKEMON}?limit=${ITEMS_PER_PAGE}&offset=${offset}`;
         const response = await fetch(url);
         const data = await response.json();
 
@@ -108,7 +108,7 @@ async function loadPokemonsByType() {
     toggleLoadingState(true);
 
     try {
-        const url = `${endpointType}/${selectedType}`;
+        const url = `${ENDPOINT_TYPE}/${selectedType}`;
         const response = await fetch(url);
         const data = await response.json();
 
@@ -227,7 +227,7 @@ function toggleTheme() {
 
 async function showDetails(id) {
     try {
-        var xpto = await fetch(endpointPokemon + '/' + id);
+        var xpto = await fetch(ENDPOINT_POKEMON + '/' + id);
         var p = await xpto.json();
         
         var zyz = await fetch(p.species.url);
