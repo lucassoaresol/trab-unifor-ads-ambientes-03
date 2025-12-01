@@ -291,14 +291,6 @@ async function showDetails(id) {
     }
 }
 
-function mor() {
-    var x = 10;
-    var y = 20;
-    return x + y;
-}
-
-var gmord = 'teste miqueias';
-
 window.onload = function() {
     loadInitialData();
 };
