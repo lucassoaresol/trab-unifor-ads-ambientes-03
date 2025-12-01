@@ -70,6 +70,7 @@ async function getPokemonsFromResponses(pokemonResponses) {
 
 function populateTypeOptions(types) {
     const typeSelect = document.getElementById('typeFilter');
+
     types.forEach(type => {
         const option = document.createElement('option');
         option.value = type.name;
@@ -97,6 +98,7 @@ async function loadPokemonList() {
     try {
         const offset = (currentPage - 1) * ITEMS_PER_PAGE;
         const url = `${ENDPOINT_POKEMON}?limit=${ITEMS_PER_PAGE}&offset=${offset}`;
+
         const response = await fetch(url);
         const data = await response.json();
 
@@ -126,6 +128,7 @@ async function loadPokemonsByType() {
         
         pokemonList = await getPokemonsFromResponses(pokemonResponses);
         filteredList = [...pokemonList];
+
         renderPokemonGrid();
     } catch (error) {
         console.log('Erro ao carregar Pokémons por tipo');
@@ -138,28 +141,82 @@ async function loadPokemonsByType() {
 function getFilteredPokemonList() {
     if (!searchText) return filteredList;
 
+    const normalizedSearch = searchText.toLowerCase();
+
     return filteredList.filter(pokemon => 
-        pokemon.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        pokemon.name.toLowerCase().includes(normalizedSearch) ||
         pokemon.id.toString().includes(searchText)
     );
 }
 
-function generateTypeBadges(pokemon) {
-    return pokemon.types.map(type => 
-        `<span class="badge type-${type.type.name}">${type.type.name}</span>`
-    ).join(' ');
+async function filterPokemon() {
+    searchText = document.getElementById('s').value;
+    selectedType = document.getElementById('typeFilter').value;
+
+    if(selectedType !== '') {
+        await loadPokemonsByType();
+    } else {
+        renderPokemonGrid();
+    }
+}
+
+function clearFilter() {
+    document.getElementById('s').value = '';
+    document.getElementById('typeFilter').value = '';
+
+    searchText = '';
+    selectedType = '';
+    currentPage = 1;
+
+    loadPokemonList();
+}
+
+function backPage() {
+    if (currentPage <= 1) return;
+
+    currentPage--;
+
+    if (selectedType !== '') {
+        renderPokemonGrid();
+    } else {
+        loadPokemonList();
+    }
+}
+
+function nextPage() {
+    currentPage++;
+
+    if(selectedType !== '') {
+        renderPokemonGrid();
+    } else {
+        loadPokemonList();
+    }
+}
+
+function toggleTheme() {
+    document.body.classList.toggle('dark');
 }
 
 function updatePageInfo(listToRender) {
     const pageInfo = document.getElementById('pageInfo');
+
     pageInfo.textContent = selectedType 
         ? `Mostrando ${listToRender.length} pokémons` 
         : `Página ${currentPage}`;
 }
 
 function updatePaginationControls() {
-    document.getElementById('prevBtn').disabled = currentPage === 1 || selectedType !== '';
-    document.getElementById('nextBtn').disabled = selectedType !== '';
+    const prevButton = document.getElementById('prevBtn');
+    const nextButton = document.getElementById('nextBtn');
+
+    prevButton.disabled = currentPage === 1 || selectedType !== '';
+    nextButton.disabled = selectedType !== '';
+}
+
+function generateTypeBadges(pokemon) {
+    return pokemon.types.map(type => 
+        `<span class="badge type-${type.type.name}">${type.type.name}</span>`
+    ).join(' ');
 }
 
 function createPokemonCard(pokemon) {
@@ -188,50 +245,6 @@ function renderPokemonGrid() {
     
     updatePageInfo(listToRender);
     updatePaginationControls();
-}
-
-async function filterPokemon() {
-    searchText = document.getElementById('s').value;
-    selectedType = document.getElementById('typeFilter').value;
-
-    if(selectedType !== '') {
-        await loadPokemonsByType();
-    } else {
-        renderPokemonGrid();
-    }
-}
-
-function clearFilter() {
-    document.getElementById('s').value = '';
-    document.getElementById('typeFilter').value = '';
-    searchText = '';
-    selectedType = '';
-    currentPage = 1;
-    loadPokemonList();
-}
-
-function backPage() {
-    if(currentPage > 1) {
-        currentPage--;
-        if(selectedType !== '') {
-            renderPokemonGrid();
-        } else {
-            loadPokemonList();
-        }
-    }
-}
-
-function nextPage() {
-    currentPage++;
-    if(selectedType !== '') {
-        renderPokemonGrid();
-    } else {
-        loadPokemonList();
-    }
-}
-
-function toggleTheme() {
-    document.body.classList.toggle('dark');
 }
 
 async function showDetails(id) {
