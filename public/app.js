@@ -9,6 +9,29 @@ let filteredList = [];
 let searchText = '';
 let selectedType = '';
 
+function capitalizeFirstLetter(text) {
+    if (!text) return '';
+    return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function toggleLoadingState(isLoading) {
+    const loadingElement = document.getElementById('loading');
+    const gridElement = document.getElementById('pokemonGrid');
+
+    loadingElement.style.display = isLoading ? 'flex' : 'none';
+    gridElement.style.display = isLoading ? 'none' : 'flex';
+}
+
+function createLoadingSkeleton() {
+    const loadingContainer = document.getElementById('loading');
+
+    const skeletonMarkup = Array.from({ length: ITEMS_PER_PAGE }, () =>
+        '<div class="col-md-3"><div class="skeleton"></div></div>'
+    ).join('');
+
+    loadingContainer.innerHTML = skeletonMarkup;
+}
+
 async function fetchPokemonTypes() {
     try {
         const response = await fetch(ENDPOINT_TYPE);
@@ -21,24 +44,6 @@ async function fetchPokemonTypes() {
         console.error('Error fetching Pokemon types:', error);
         return [];
     }
-}
-
-function createLoadingSkeleton() {
-    const loadingContainer = document.getElementById('loading');    
-    loadingContainer.innerHTML = Array.from({ length: ITEMS_PER_PAGE }, () => 
-        '<div class="col-md-3"><div class="skeleton"></div></div>'
-    ).join('');
-}
-
-function toggleLoadingState(isLoading) {
-    const loadingElement = document.getElementById('loading');
-    const gridElement = document.getElementById('pokemonGrid');
-    loadingElement.style.display = isLoading ? 'flex' : 'none';
-    gridElement.style.display = isLoading ? 'none' : 'flex';
-}
-
-function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 function populateTypeOptions(types) {
