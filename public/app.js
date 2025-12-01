@@ -35,15 +35,37 @@ function createLoadingSkeleton() {
 async function fetchPokemonTypes() {
     try {
         const response = await fetch(ENDPOINT_TYPE);
+
         if (!response.ok) {
             throw new Error(`Failed to fetch Pokemon types. Status: ${response.status}`);
         }
+
         const data = await response.json();
         return data.results ?? [];
     } catch (error) {
         console.error('Error fetching Pokemon types:', error);
         return [];
     }
+}
+
+async function fetchPokemonDetails(pokemonUrl) {
+    const response = await fetch(pokemonUrl);
+
+    if (!response.ok) {
+        throw new Error('Failed to fetch Pokemon details');
+    }
+
+    return response.json();
+}
+
+function createPokemonFetchPromises(pokemonData) {
+    const limit = Math.min(pokemonData.length, 100);
+    return pokemonData.slice(0, limit).map(pokemon => fetch(pokemon.pokemon.url));
+}
+
+async function getPokemonsFromResponses(pokemonResponses) {
+    const pokemonPromises = pokemonResponses.map(response => response.json());
+    return await Promise.all(pokemonPromises);
 }
 
 function populateTypeOptions(types) {
@@ -69,14 +91,6 @@ async function loadInitialData() {
     await loadPokemonList();
 }
 
-async function fetchPokemonDetails(pokemonUrl) {
-    const response = await fetch(pokemonUrl);
-    if (!response.ok) {
-        throw new Error('Failed to fetch Pokemon details');
-    }
-    return response.json();
-}
-
 async function loadPokemonList() {
     toggleLoadingState(true);
 
@@ -97,16 +111,6 @@ async function loadPokemonList() {
     } finally {
         toggleLoadingState(false);
     }
-}
-
-function createPokemonFetchPromises(pokemonData) {
-    const limit = Math.min(pokemonData.length, 100);
-    return pokemonData.slice(0, limit).map(pokemon => fetch(pokemon.pokemon.url));
-}
-
-async function getPokemonsFromResponses(pokemonResponses) {
-    const pokemonPromises = pokemonResponses.map(response => response.json());
-    return await Promise.all(pokemonPromises);
 }
 
 async function loadPokemonsByType() {
