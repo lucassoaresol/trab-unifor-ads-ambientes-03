@@ -265,7 +265,7 @@ function getFilteredPokemonList() {
 }
 
 async function filterPokemon() {
-    searchText = document.getElementById('s').value;
+    searchText = document.getElementById('searchInput').value;
     selectedType = document.getElementById('typeFilter').value;
 
     if(selectedType !== '') {
@@ -276,7 +276,7 @@ async function filterPokemon() {
 }
 
 function clearFilter() {
-    document.getElementById('s').value = '';
+    document.getElementById('searchInput').value = '';
     document.getElementById('typeFilter').value = '';
 
     searchText = '';
